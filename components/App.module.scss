@@ -20,6 +20,13 @@
     align-items: stretch;
     overflow: auto;
 }
+.newGameContent {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
 .section {
     display: flex;
     flex-wrap: wrap;
@@ -36,7 +43,6 @@
     border-radius: 1rem;
     cursor: pointer;
 }
-
 //TABS
 .tabs {
     display: flex;
@@ -54,6 +60,12 @@
     border-radius: 1rem 1rem 0 0;
     border: 2px solid #ff80cf;
 }
+.menu {
+    flex-grow: unset !important;
+    min-width: 4rem;
+    font-size: 0.5rem;
+    color: black;
+}
 .active {
     border-bottom: none;
     background: #ffe9ed
@@ -69,6 +81,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.playersPage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
+}
+.playersContent {
+    display: flex;
+    flex-grow: 1;
+    align-items: stretch;
+    flex-direction: column;
 }
 //PLAYER
 .playerContainer {

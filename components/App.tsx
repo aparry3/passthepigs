@@ -1,8 +1,8 @@
-import { faPencil, faX } from "@fortawesome/free-solid-svg-icons"
+import { faBars, faBurger, faPencil, faX } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { FC, useEffect, useState } from "react"
 import styles from './App.module.scss'
-import { Double, FinishTurn, LeaningJowler, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
+import { Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
 
 interface Turn {
     rolls: Array<Roll | [Roll, Roll]>
@@ -17,7 +17,8 @@ interface Player {
 
 enum Tabs {
     ROLL,
-    PLAYERS
+    PLAYERS,
+    MENU
 }
 enum GameState {
     SETUP,
@@ -125,6 +126,13 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         const value = window.localStorage.getItem(key)
         return value ? JSON.parse(value) : undefined
     }
+    const clearLocally = () => {
+        window.localStorage.clear()
+        setCurrentPlayer(0)
+        setTab(Tabs.PLAYERS)
+        setGameState(GameState.SETUP)
+        setPlayers([])
+    }
 
     const finishTurn = (thisTurn: Turn) => {
         setDouble(false)
@@ -156,9 +164,14 @@ const PassThePigsCounter: FC<{}> = ({}) => {
 
     }
 
+    const handleNweGame = () => {
+        
+    }
+
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
+                <div className={`${styles.tab} ${styles.menu} ${tab === Tabs.MENU && styles.active}`} onClick={() => setTab(Tabs.MENU)}><FontAwesomeIcon icon={faBars} /></div>
                 <div className={`${styles.tab} ${tab === Tabs.ROLL && styles.active}`} onClick={players.length ? () => setTab(Tabs.ROLL) : () => {}}>Rolls the Pigs</div>
                 <div className={`${styles.tab} ${tab === Tabs.PLAYERS && styles.active}`} onClick={() => setTab(Tabs.PLAYERS)}>Players</div>
             </div>
@@ -188,17 +201,23 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                         <Oinker onClick={handleRoll}/>
                     </div>
                 </>
-                ) : (
-                    <>
-                        <Players onNewPlayer={handleNewPlayer} onRemovePlayer={handleRemovePlayer} players={players} gameState={gameState}/>            
-                        {gameState == GameState.SETUP && (
-                        <div className={styles.playButtonContainer}>
-                            <div className={styles.playButton} onClick={players.length ? play : () => {}}>
-                                Lets Roll the Pigs!
+                ) : tab === Tabs.PLAYERS ? (
+                    <div className={styles.playersPage}>
+                        <div className={styles.playersContent}>
+                            <Players onNewPlayer={handleNewPlayer} onRemovePlayer={handleRemovePlayer} players={players} gameState={gameState}/>            
+                            {gameState == GameState.SETUP && (
+                            <div className={styles.playButtonContainer}>
+                                <div className={styles.playButton} onClick={players.length ? play : () => {}}>
+                                    Lets Roll the Pigs!
+                                </div>
                             </div>
+                            )}
                         </div>
-                        )}
-                    </>
+                    </div>
+                ): (
+                    <div className={styles.newGameContent}>
+                       <NewGame onClick={clearLocally}/>
+                    </div>
                 )}
             </div>
         </div>
@@ -247,7 +266,7 @@ const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameSt
         <div className={styles.playersContainer}>
             
             {players.map((player, index) => (
-                <Player key={player.name} player={player} removePlayer={() => onRemovePlayer(index)}/>
+                <Player key={player.name} player={player} removePlayer={() => onRemovePlayer(index)} gameState={gameState}/>
             ))}
             {gameState == GameState.SETUP && (
                 <div className={styles.playerInputContainer} >
