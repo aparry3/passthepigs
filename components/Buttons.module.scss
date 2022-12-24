@@ -1,0 +1,22 @@
+.pigSelect {
+    height: 10rem;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.pigSelectButton {
+    height: 100%;
+    width: 100%;
+    border: 2px solid #ff80cf;
+    border-radius: 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+        background: #ff80cf;
+    }
+}

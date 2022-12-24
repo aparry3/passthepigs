@@ -1,0 +1,133 @@
+//APP
+.app {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(55, 55, 55);
+    background: #ffe9ed;
+}
+.content {
+    max-width: 70%;
+    width: 70%;
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+}
+.section {
+    display: flex;
+    flex-wrap: wrap;
+}
+.playButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.playButton {
+    background: pink;
+    padding: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+//TABS
+.tabs {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+}
+.tab {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.currentTurn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+.points {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+//PLAYER
+.playerContainer {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    padding: 0.5rem;
+    text-align: center;
+}
+.playerName {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+.button {
+    padding: 0.5rem;
+    display: flex;
+    font-size: 1.2rem;
+    align-items: center;
+    cursor: pointer;
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+//PLAYERS
+.playersContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.playerInputContainer {
+    display: flex;
+    padding: 1rem;
+}
+.playerInput {
+    flex-grow: 1;
+    border-radius: 1rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+}
+.playerNameLabel {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+}
+.saveButtonContainer {
+    padding: 0.5rem 1rem;
+}
+.saveButton {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: #4db3ff;
+    height: 100%;
+    width: 100%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    &:hover {
+        background: #0293ff;
+    }
+}
