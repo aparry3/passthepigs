@@ -1,6 +1,6 @@
 import { faPencil, faX } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import styles from './App.module.scss'
 import { Double, FinishTurn, LeaningJowler, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
 
@@ -91,6 +91,18 @@ const PassThePigsCounter: FC<{}> = ({}) => {
 
     const [turn, setTurn] = useState<Turn>(newTurn())
     const [double, setDouble] = useState<boolean>(false)
+
+    useEffect(() => {
+        const _players = getLocally('players') as Player[]
+        const _currentPlayer = getLocally('currentPlayer') as number
+        if (_players) {
+            setPlayers(_players)
+            setCurrentPlayer(_currentPlayer)
+            setGameState(GameState.PLAY)
+            setTab(Tabs.ROLL)
+        }
+    }, [])
+
     const handleNewPlayer = (name: string) => {
         setPlayers([...players, newPlayer(name)])
     }
@@ -105,15 +117,26 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         setGameState(GameState.PLAY)
         setTab(Tabs.ROLL)
     }
+    const saveLocally = (player: number) => {
+        window.localStorage.setItem('currentPlayer', JSON.stringify(player))
+        window.localStorage.setItem('players', JSON.stringify(players))
+    }
+    const getLocally = (key: 'players' | 'currentPlayer'): Player[] | number => {
+        const value = window.localStorage.getItem(key)
+        return value ? JSON.parse(value) : undefined
+    }
 
     const finishTurn = (thisTurn: Turn) => {
         setDouble(false)
         const _players = [...players]
         _players[currentPlayer].history.push(thisTurn)
         _players[currentPlayer].points = _players[currentPlayer].points + thisTurn.points
-        setCurrentPlayer((currentPlayer + 1) % players.length)
+        
+        const _currentPlayer = (currentPlayer + 1) % players.length
+        setCurrentPlayer(_currentPlayer)
         setPlayers(_players)
         setTurn(newTurn())
+        saveLocally(_currentPlayer)
     }
 
     const handleRoll = (roll: Roll) => {
