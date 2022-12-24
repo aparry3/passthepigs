@@ -159,8 +159,8 @@ const PassThePigsCounter: FC<{}> = ({}) => {
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
-                <div className={styles.tab} onClick={players.length ? () => setTab(Tabs.ROLL) : () => {}}>Rolls the Pigs</div>
-                <div className={styles.tab} onClick={() => setTab(Tabs.PLAYERS)}>Players</div>
+                <div className={`${styles.tab} ${tab === Tabs.ROLL && styles.active}`} onClick={players.length ? () => setTab(Tabs.ROLL) : () => {}}>Rolls the Pigs</div>
+                <div className={`${styles.tab} ${tab === Tabs.PLAYERS && styles.active}`} onClick={() => setTab(Tabs.PLAYERS)}>Players</div>
             </div>
             <div className={styles.content}>
                 {tab === Tabs.ROLL ? (

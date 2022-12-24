@@ -45,13 +45,19 @@
     width: 100%;
 }
 .tab {
+    cursor: pointer;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    border-radius: 1rem 1rem 0 0;
+    border: 2px solid #ff80cf;
 }
-
+.active {
+    border-bottom: none;
+    background: #ffe9ed
+}
 .currentTurn {
     display: flex;
     justify-content: space-between;
