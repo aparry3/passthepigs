@@ -16,9 +16,9 @@
     width: 70%;
     flex-grow: 1;
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     align-items: stretch;
+    overflow: auto;
 }
 .section {
     display: flex;
@@ -130,4 +130,41 @@
     &:hover {
         background: #0293ff;
     }
+}
+
+@media screen and (max-width: 600px) {
+    .app {
+        font-size: 1.2rem;
+        overflow: hdden;
+    }    
+    .content {
+        max-width: 100%;
+        width: 100%;
+    }
+    .playerInputContainer {
+        padding: 0.5rem;
+    }
+    .playerInput {
+        flex-grow: 1;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+    .saveButton {
+        padding: 0.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        background: #4db3ff;
+        height: 100%;
+        width: 100%;
+        font-size: 1.1rem;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            background: #0293ff;
+        }
+    }     
+
 }

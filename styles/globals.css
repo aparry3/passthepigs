@@ -81,6 +81,12 @@
 
 html,
 body {
+  overscroll-behavior: none;
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  overflow: hidden;
+  
   max-width: 100vw;
   overflow-x: hidden;
 }

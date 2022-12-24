@@ -24,12 +24,12 @@ export const Button: FC<ButtonProps> = ({roll, onClick}) => {
 }
 
 
-export const Combo: FC<{onClick: () => void}> = ({onClick}) => {
+export const Double: FC<{onClick: () => void}> = ({onClick}) => {
     return (
         <div className={styles.pigSelect}>
             <div className={styles.pigSelectButton} onClick={onClick}>
                 <span>
-                    COMBO
+                    2X
                 </span>
             </div>
         </div>

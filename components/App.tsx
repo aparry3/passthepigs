@@ -2,10 +2,10 @@ import { faPencil, faX } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { FC, useState } from "react"
 import styles from './App.module.scss'
-import { Combo, FinishTurn, LeaningJowler, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
+import { Double, FinishTurn, LeaningJowler, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
 
 interface Turn {
-    rolls: Array<Roll | Roll[]>
+    rolls: Array<Roll | [Roll, Roll]>
     points: number
 }
 
@@ -90,7 +90,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
     const [tab, setTab] = useState<Tabs>(Tabs.PLAYERS)
 
     const [turn, setTurn] = useState<Turn>(newTurn())
-    const [combo, setCombo] = useState<Roll[]>()
+    const [double, setDouble] = useState<boolean>(false)
     const handleNewPlayer = (name: string) => {
         setPlayers([...players, newPlayer(name)])
     }
@@ -107,7 +107,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
     }
 
     const finishTurn = (thisTurn: Turn) => {
-        setCombo(undefined)
+        setDouble(false)
         const _players = [...players]
         _players[currentPlayer].history.push(thisTurn)
         _players[currentPlayer].points = _players[currentPlayer].points + thisTurn.points
@@ -118,15 +118,9 @@ const PassThePigsCounter: FC<{}> = ({}) => {
 
     const handleRoll = (roll: Roll) => {
         const _turn = {...turn}
-        if (combo) {
-            const _combo = [...combo]
-            _combo.push(roll)
-            if (_combo.length === 2) {
-                _turn.rolls.push(_combo)
-                setCombo(undefined)
-            } else {
-                setCombo(_combo)
-            }
+        if (double) {
+            _turn.rolls.push([roll, roll])
+            setDouble(false)
         } else {
             _turn.rolls.push(roll)
         }
@@ -142,7 +136,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
-                <div className={styles.tab} onClick={() => setTab(Tabs.ROLL)}>Rolls the Pigs</div>
+                <div className={styles.tab} onClick={players.length ? () => setTab(Tabs.ROLL) : () => {}}>Rolls the Pigs</div>
                 <div className={styles.tab} onClick={() => setTab(Tabs.PLAYERS)}>Players</div>
             </div>
             <div className={styles.content}>
@@ -163,7 +157,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                         <Trotter onClick={handleRoll}/>
                         <Snouter onClick={handleRoll}/>
                         <LeaningJowler onClick={handleRoll}/>
-                        <Combo onClick={() => setCombo([])}/>
+                        <Double onClick={() => setDouble(true)}/>
                     </div>
                     <hr />
                     <div className={styles.section}>
@@ -176,7 +170,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                         <Players onNewPlayer={handleNewPlayer} onRemovePlayer={handleRemovePlayer} players={players} gameState={gameState}/>            
                         {gameState == GameState.SETUP && (
                         <div className={styles.playButtonContainer}>
-                            <div className={styles.playButton} onClick={play}>
+                            <div className={styles.playButton} onClick={players.length ? play : () => {}}>
                                 Lets Roll the Pigs!
                             </div>
                         </div>
@@ -218,7 +212,7 @@ interface PlayersProps {
 
 const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameState}) => {
     const [newPlayerName, setNewPlayerName] = useState<string>('')
-    
+    console.log(players)
     const handleNewPlayer = () => {
         if (newPlayerName) {
             onNewPlayer(newPlayerName)
