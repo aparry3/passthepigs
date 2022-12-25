@@ -19,6 +19,9 @@
     justify-content: space-around;
     align-items: center;
     cursor: pointer;
+    &:active {
+        background: #ff80cf;
+    }
     &:hover {
         background: #ff80cf;
     }
