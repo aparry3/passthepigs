@@ -110,10 +110,15 @@
     align-items: center;
 }
 .button {
-    padding: 0.5rem;
+    padding: 0 1rem;
     display: flex;
-    font-size: 1.2rem;
+    color: black;
+    font-size: 1.2rem !important;
     align-items: center;
+    cursor: pointer;
+}
+.icon {
+    padding: 0 1rem;
     cursor: pointer;
 }
 .buttons {

@@ -13,12 +13,13 @@ export const Button: FC<ButtonProps> = ({roll, onClick}) => {
     return (
         <div className={styles.pigSelect}>
             <div 
-                onTouchStart={() => setActive(true)} 
-                onTouchEnd={() => setActive(false)} 
-                onMouseDown={() => setActive(true)} 
-                onMouseUp={() => setActive(false)}
                 onMouseEnter={() => setActive(true)}
                 onMouseLeave={() => setActive(false)}
+                onMouseDown={() => setActive(true)} 
+                onMouseUp={() => setActive(false)}
+                onTouchStart={() => setActive(true)} 
+                onTouchEnd={() => setActive(false)} 
+
                 className={`${styles.pigSelectButton} ${active && styles.active}`} 
                 onClick={() => onClick(roll)}>
                 <span>

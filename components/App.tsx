@@ -1,5 +1,5 @@
-import { faBars, faBurger, faPencil, faX } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars, faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect, useState } from "react"
 import styles from './App.module.scss'
 import { Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
@@ -164,14 +164,22 @@ const PassThePigsCounter: FC<{}> = ({}) => {
 
     }
 
-    const handleNweGame = () => {
-        
+    const movePlayer = (up: boolean, index: number) => {
+        if (up && index === 0) return
+        if (!up && index === players.length - 1) return
+
+        const _players = [...players]
+        const player = _players.splice(index, 1)[0]
+        _players.splice(up ? index - 1 : index + 1, 0, player)
+        setPlayers(_players)
     }
 
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
-                <div className={`${styles.tab} ${styles.menu} ${tab === Tabs.MENU && styles.active}`} onClick={() => setTab(Tabs.MENU)}><FontAwesomeIcon icon={faBars} /></div>
+                <div className={`${styles.tab} ${styles.menu} ${tab === Tabs.MENU && styles.active}`} onClick={() => setTab(Tabs.MENU)}>
+                    <FontAwesomeIcon icon={faBars} />
+                </div>
                 <div className={`${styles.tab} ${tab === Tabs.ROLL && styles.active}`} onClick={players.length ? () => setTab(Tabs.ROLL) : () => {}}>Rolls the Pigs</div>
                 <div className={`${styles.tab} ${tab === Tabs.PLAYERS && styles.active}`} onClick={() => setTab(Tabs.PLAYERS)}>Players</div>
             </div>
@@ -204,7 +212,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                 ) : tab === Tabs.PLAYERS ? (
                     <div className={styles.playersPage}>
                         <div className={styles.playersContent}>
-                            <Players onNewPlayer={handleNewPlayer} onRemovePlayer={handleRemovePlayer} players={players} gameState={gameState}/>            
+                            <Players movePlayer={movePlayer} onNewPlayer={handleNewPlayer} onRemovePlayer={handleRemovePlayer} players={players} gameState={gameState}/>            
                             {gameState == GameState.SETUP && (
                             <div className={styles.playButtonContainer}>
                                 <div className={styles.playButton} onClick={players.length ? play : () => {}}>
@@ -228,18 +236,28 @@ interface PlayerProps {
     player: Player
     removePlayer?: () => void
     gameState?: GameState
+    movePlayer?: (up: boolean) => void
+    last?: boolean
+    first?: boolean
 }
 
-const Player: FC<PlayerProps> = ({player, removePlayer, gameState}) => {
+const Player: FC<PlayerProps> = ({player, first = false, last = false, removePlayer, gameState, movePlayer}) => {
+    const canMove = (up: boolean) => {
+        return up ? movePlayer && !first : movePlayer && !last
+    }
     return (
         <div className={styles.playerContainer}>
-            <div className={styles.playerName}>{player.name}</div>
+            <div className={styles.playerName}>
+                {canMove(true) && <span className={styles.icon} onClick={() => movePlayer?.(true)}><FontAwesomeIcon icon={faChevronUp}  style={{height: '15px'}}/></span>}
+                <span>{player.name}</span>
+                {canMove(false) && <span className={styles.icon} onClick={() => movePlayer?.(false)}><FontAwesomeIcon icon={faChevronDown}  style={{height: '15px'}}/></span>}
+            </div>
             <div className={styles.playerPoints}>{player.points}</div>
+
             {gameState !== GameState.PLAY && (
-                <>
-                    <div className={styles.button}><FontAwesomeIcon icon={faPencil} /></div>
-                    <div className={styles.button} onClick={removePlayer}><FontAwesomeIcon icon={faX} /></div>
-                </>
+                <div className={styles.button} onClick={removePlayer}>
+                    <span><FontAwesomeIcon icon={faX} style={{height: '15px'}}/></span>
+                </div>
             )}
         </div>
     )
@@ -250,9 +268,10 @@ interface PlayersProps {
     gameState: GameState
     onNewPlayer: (name: string) => void
     onRemovePlayer: (index: number) => void
+    movePlayer: (up: boolean, index: number) => void
 }
 
-const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameState}) => {
+const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameState, movePlayer}) => {
     const [newPlayerName, setNewPlayerName] = useState<string>('')
     console.log(players)
     const handleNewPlayer = () => {
@@ -266,7 +285,7 @@ const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameSt
         <div className={styles.playersContainer}>
             
             {players.map((player, index) => (
-                <Player key={player.name} player={player} removePlayer={() => onRemovePlayer(index)} gameState={gameState}/>
+                <Player last={index === players.length - 1} first={index === 0} movePlayer={(up) => movePlayer(up, index)} key={player.name} player={player} removePlayer={() => onRemovePlayer(index)} gameState={gameState}/>
             ))}
             <div className={styles.playerInputContainer} >
                 <label htmlFor="name" className={styles.playerNameLabel}>Name</label>
