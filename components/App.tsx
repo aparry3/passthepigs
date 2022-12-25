@@ -193,7 +193,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                         <Trotter onClick={handleRoll}/>
                         <Snouter onClick={handleRoll}/>
                         <LeaningJowler onClick={handleRoll}/>
-                        <Double onClick={() => setDouble(true)}/>
+                        <Double active={double} onClick={() => setDouble(true)}/>
                     </div>
                     <hr />
                     <div className={styles.section}>

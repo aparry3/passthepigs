@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useState } from "react"
 import { getValue, Roll } from "./App"
 import styles from './Buttons.module.scss'
 
@@ -9,9 +9,18 @@ interface ButtonProps {
 
 export const Button: FC<ButtonProps> = ({roll, onClick}) => {
     const points = getValue(roll)
+    const [active, setActive] = useState<boolean>(false)
     return (
         <div className={styles.pigSelect}>
-            <div className={styles.pigSelectButton} onClick={() => onClick(roll)}>
+            <div 
+                onTouchStart={() => setActive(true)} 
+                onTouchEnd={() => setActive(false)} 
+                onMouseDown={() => setActive(true)} 
+                onMouseUp={() => setActive(false)}
+                onMouseEnter={() => setActive(true)}
+                onMouseLeave={() => setActive(false)}
+                className={`${styles.pigSelectButton} ${active && styles.active}`} 
+                onClick={() => onClick(roll)}>
                 <span>
                     {roll}
                 </span>
@@ -24,10 +33,10 @@ export const Button: FC<ButtonProps> = ({roll, onClick}) => {
 }
 
 
-export const Double: FC<{onClick: () => void}> = ({onClick}) => {
+export const Double: FC<{onClick: () => void, active?: boolean}> = ({onClick, active}) => {
     return (
         <div className={styles.pigSelect}>
-            <div className={styles.pigSelectButton} onClick={onClick}>
+            <div className={`${styles.pigSelectButton} ${active && styles.active}`} onClick={onClick}>
                 <span>
                     2X
                 </span>
