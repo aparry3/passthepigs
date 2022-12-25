@@ -32,3 +32,10 @@
     }
     
 }
+@media (hover:none) {
+    .pigSelectButton {
+        &:hover {
+            background: #ffe9ed;
+        }
+    }     
+}
