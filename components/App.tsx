@@ -268,21 +268,19 @@ const Players: FC<PlayersProps> = ({players, onNewPlayer, onRemovePlayer, gameSt
             {players.map((player, index) => (
                 <Player key={player.name} player={player} removePlayer={() => onRemovePlayer(index)} gameState={gameState}/>
             ))}
-            {gameState == GameState.SETUP && (
-                <div className={styles.playerInputContainer} >
-                    <label htmlFor="name" className={styles.playerNameLabel}>Name</label>
-                    <input 
-                        name="name"
-                        className={styles.playerInput} 
-                        value={newPlayerName} 
-                        onChange={e => setNewPlayerName(e.target.value)}/>
-                    <div className={styles.saveButtonContainer}>
-                        <div className={styles.saveButton} onClick={handleNewPlayer}>
-                            Add Player
-                        </div>
+            <div className={styles.playerInputContainer} >
+                <label htmlFor="name" className={styles.playerNameLabel}>Name</label>
+                <input 
+                    name="name"
+                    className={styles.playerInput} 
+                    value={newPlayerName} 
+                    onChange={e => setNewPlayerName(e.target.value)}/>
+                <div className={styles.saveButtonContainer}>
+                    <div className={styles.saveButton} onClick={handleNewPlayer}>
+                        Add Player
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     )
 }
