@@ -183,7 +183,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                     </div>
                     <hr />
                     <div className={styles.currentTurn}>
-                        <div className={styles.points}>{turn.points}</div>
+                        <div className={styles.points}>{turn.points} {`(${turn.points + players[currentPlayer].points})`}</div>
                         <FinishTurn onClick={() => finishTurn(turn)}/>
                     </div>
                     <hr />
