@@ -211,8 +211,8 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                     </div>
                     <hr />
                     <div className={styles.section}>
-                        <PigOut onClick={handleRoll}/>
                         <Oinker onClick={handleRoll}/>
+                        <PigOut onClick={handleRoll}/>
                     </div>
                 </>
                 ) : tab === Tabs.PLAYERS ? (
