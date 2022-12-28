@@ -23,6 +23,20 @@
 .active {
     background: #ff80cf;
 }
+.subButton {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: inherit;
+    max-width: 50%;
+}
+.vertical {
+    height: 100%;
+    width: 1px;
+    background: #ff80cf;
+}
 
 @media screen and (max-width: 600px) {
     .pigSelect {

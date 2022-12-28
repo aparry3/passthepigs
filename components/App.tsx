@@ -5,7 +5,7 @@ import styles from './App.module.scss'
 import { ClearScores, Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, TogglePoints, Trotter } from "./Buttons"
 
 interface Turn {
-    rolls: Array<Roll | [Roll, Roll]>
+    rolls: Array<Roll | [Roll, Roll] | [number, Roll, Roll]>
     points: number
 }
 
@@ -77,19 +77,21 @@ export const getValue = (roll: Roll, system: PointSystem = PointSystem.DEFAULT):
     // }
 }
 
-const count = (turn: Array<Roll | Roll[]>, current: number, pointSystem: PointSystem = PointSystem.DEFAULT): number => {
-    console.log(turn[turn.length - 1])
-    console.log(turn[turn.length - 1] === Roll.PIG_OUT)
+const count = (turn: Array<Roll | [Roll, Roll] | [number, Roll, Roll]>, current: number, pointSystem: PointSystem = PointSystem.DEFAULT): number => {
     if (turn[turn.length - 1] === Roll.PIG_OUT) return 0
     if (turn[turn.length - 1] === Roll.OINKER) return -1 * current
 
     return turn.reduce<number>((total, roll) => {
         if (roll instanceof Array) {
-            let count = getValue(roll[0], pointSystem) + getValue(roll[1], pointSystem)
-            if (roll[0] === roll[1]) {
-                count = count * 2
+            let _count = 0
+            if (typeof roll[0] ===  'number') {
+                _count = getValue(roll[1], pointSystem) + getValue(roll[2], pointSystem)
+                _count = _count * roll[0]
+            } else {
+                _count = getValue(roll[0], pointSystem) + getValue(roll[1], pointSystem)
+                _count = _count * 2
             }
-            return total + count
+            return total + _count
         }
         return total + getValue(roll, pointSystem)
 
@@ -121,15 +123,20 @@ const PassThePigsCounter: FC<{}> = ({}) => {
 
     const [turn, setTurn] = useState<Turn>(newTurn())
     const [double, setDouble] = useState<boolean>(false)
+    const [multiple, setMultiple] = useState<boolean>(false)
+    const [multipleFirst, setMultipleFirst] = useState<Roll | undefined>()
 
     useEffect(() => {
         const _players = getLocally('players') as Player[]
         const _currentPlayer = getLocally('currentPlayer') as number
+        const _pointSystem = getLocally('pointSystem') as PointSystem
+        console.log(_pointSystem)
         if (_players) {
             setPlayers(_players)
             setCurrentPlayer(_currentPlayer)
             setGameState(GameState.PLAY)
             setTab(Tabs.ROLL)
+            setPointSystem(_pointSystem)
         }
     }, [])
 
@@ -148,10 +155,12 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         setTab(Tabs.ROLL)
     }
     const saveLocally = (player: number) => {
+        console.log(pointSystem)
         window.localStorage.setItem('currentPlayer', JSON.stringify(player))
         window.localStorage.setItem('players', JSON.stringify(players))
+        window.localStorage.setItem('pointSystem', JSON.stringify(pointSystem))
     }
-    const getLocally = (key: 'players' | 'currentPlayer'): Player[] | number => {
+    const getLocally = (key: 'players' | 'currentPlayer' | 'pointSystem'): Player[] | number => {
         const value = window.localStorage.getItem(key)
         return value ? JSON.parse(value) : undefined
     }
@@ -181,6 +190,14 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         if (double) {
             _turn.rolls.push([roll, roll])
             setDouble(false)
+        } else if (multiple) {
+            if (!multipleFirst) {
+                setMultipleFirst(roll)
+            } else {
+                _turn.rolls.push([1.25, multipleFirst, roll])
+                setMultiple(false)
+                setMultipleFirst(undefined)
+            }
         } else {
             _turn.rolls.push(roll)
         }
@@ -213,7 +230,6 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         setPointSystem(pointSystem === PointSystem.DEFAULT ? PointSystem.CAPPA : PointSystem.DEFAULT)
     }
 
-
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
@@ -236,12 +252,12 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                     </div>
                     <hr />
                     <div className={styles.section}>
-                        <Sider pointSystem={pointSystem} onClick={handleRoll}/>
-                        <RazorBack pointSystem={pointSystem} onClick={handleRoll}/>
-                        <Trotter pointSystem={pointSystem} onClick={handleRoll}/>
-                        <Snouter pointSystem={pointSystem} onClick={handleRoll}/>
-                        <LeaningJowler pointSystem={pointSystem} onClick={handleRoll}/>
-                        <Double active={double} onClick={() => setDouble(true)}/>
+                        <Sider pointSystem={pointSystem} active={multiple && multipleFirst === Roll.SIDER} onClick={handleRoll}/>
+                        <RazorBack pointSystem={pointSystem} active={multiple && multipleFirst === Roll.RAZORBACK} onClick={handleRoll}/>
+                        <Trotter pointSystem={pointSystem} active={multiple && multipleFirst === Roll.TROTTER} onClick={handleRoll}/>
+                        <Snouter pointSystem={pointSystem} active={multiple && multipleFirst === Roll.SNOUTER} onClick={handleRoll}/>
+                        <LeaningJowler pointSystem={pointSystem} active={multiple && multipleFirst === Roll.LEANING_JOWLER} onClick={handleRoll}/>
+                        <Double pointSystem={pointSystem} smallActive={multiple} onClickSmall={() => {setMultiple(true); setDouble(false)}} active={double} onClick={() =>{setDouble(true); setMultiple(false)}}/>
                     </div>
                     <hr />
                     <div className={styles.section}>
