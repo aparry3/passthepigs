@@ -68,6 +68,17 @@ export const NewGame: FC<{onClick: () => void}> = ({onClick}) => {
     )
 }
 
+export const ClearScores: FC<{onClick: () => void}> = ({onClick}) => {
+    return (
+        <div className={`${styles.pigSelect} ${styles.fullSize}`}>
+            <div className={styles.pigSelectButton} onClick={onClick}>
+                <span>
+                    Clear Scores
+                </span>
+            </div>
+        </div>
+    )
+}
 
 interface RollProps {
     onClick: (roll: Roll) => void

@@ -2,7 +2,7 @@ import { faBars, faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect, useState } from "react"
 import styles from './App.module.scss'
-import { Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
+import { ClearScores, Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
 
 interface Turn {
     rolls: Array<Roll | [Roll, Roll]>
@@ -174,6 +174,12 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         setPlayers(_players)
     }
 
+    const clearScore = () => {
+        const _players = players.map(p => newPlayer(p.name))
+        setPlayers(_players)
+        setTab(Tabs.ROLL)
+    }
+
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
@@ -225,6 +231,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                 ): (
                     <div className={styles.newGameContent}>
                        <NewGame onClick={clearLocally}/>
+                       <ClearScores onClick={clearScore}/>
                     </div>
                 )}
             </div>
