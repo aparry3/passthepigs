@@ -2,7 +2,7 @@ import { faBars, faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useEffect, useState } from "react"
 import styles from './App.module.scss'
-import { ClearScores, Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, Trotter } from "./Buttons"
+import { ClearScores, Double, FinishTurn, LeaningJowler, NewGame, Oinker, PigOut, RazorBack, Sider, Snouter, TogglePoints, Trotter } from "./Buttons"
 
 interface Turn {
     rolls: Array<Roll | [Roll, Roll]>
@@ -38,19 +38,46 @@ export enum Roll {
 
 const TURN_ENDING_ROLLS = [Roll.OINKER, Roll.PIG_OUT]
 
-export const getValue = (roll: Roll) => {
-    switch(roll) {
-        case(Roll.LEANING_JOWLER): return 15
-        case(Roll.SNOUTER): return 10
-        case(Roll.SIDER): return 1
-        case(Roll.TROTTER): return 5
-        case(Roll.RAZORBACK): return 5
-        default:
-            return 0
-    }
+
+const POINTS = [
+    new Map([
+        [Roll.LEANING_JOWLER, 15],
+        [Roll.SNOUTER, 10],
+        [Roll.SIDER, 1],
+        [Roll.TROTTER, 5],
+        [Roll.RAZORBACK, 5],
+    ]),
+    new Map([
+        [Roll.LEANING_JOWLER, 25],
+        [Roll.SNOUTER, 15],
+        [Roll.SIDER, 1],
+        [Roll.TROTTER, 5],
+        [Roll.RAZORBACK, 3],
+    ])
+]
+export enum PointSystem {
+    DEFAULT = 0,
+    CAPPA = 1
 }
 
-const count = (turn: Array<Roll | Roll[]>, current: number): number => {
+export const getValue = (roll: Roll, system: PointSystem = PointSystem.DEFAULT): number => {
+    const pointsMap = POINTS[system]
+    if (pointsMap.has(roll)) {
+        return pointsMap.get(roll)!
+    }
+    return 0
+    // switch(roll) {
+    //     case(Roll.LEANING_JOWLER): return 15
+    //     case(Roll.SNOUTER): return 10
+    //     case(Roll.SIDER): return 1
+    //     case(Roll.TROTTER): return 5
+    //     case(Roll.RAZORBACK): return 5
+    //     default:
+    //         return 0
+    // }
+}
+
+const count = (turn: Array<Roll | Roll[]>, current: number, pointSystem: PointSystem = PointSystem.DEFAULT): number => {
     console.log(turn[turn.length - 1])
     console.log(turn[turn.length - 1] === Roll.PIG_OUT)
     if (turn[turn.length - 1] === Roll.PIG_OUT) return 0
@@ -58,13 +85,13 @@ const count = (turn: Array<Roll | Roll[]>, current: number): number => {
 
     return turn.reduce<number>((total, roll) => {
         if (roll instanceof Array) {
-            let count = getValue(roll[0]) + getValue(roll[1])
+            let count = getValue(roll[0], pointSystem) + getValue(roll[1], pointSystem)
             if (roll[0] === roll[1]) {
                 count = count * 2
             }
             return total + count
         }
-        return total + getValue(roll)
+        return total + getValue(roll, pointSystem)
 
     }, 0)
 
@@ -85,6 +112,8 @@ const newTurn = () => {
     }
 }
 const PassThePigsCounter: FC<{}> = ({}) => {
+    const [pointSystem, setPointSystem] = useState<PointSystem>(PointSystem.DEFAULT)
+
     const [gameState, setGameState] = useState<GameState>(GameState.SETUP)
     const [players, setPlayers] = useState<Player[]>([])
     const [currentPlayer, setCurrentPlayer] = useState<number>(0)
@@ -155,7 +184,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         } else {
             _turn.rolls.push(roll)
         }
-        const points = count(_turn.rolls, players[currentPlayer].points)
+        const points = count(_turn.rolls, players[currentPlayer].points, pointSystem)
         _turn.points = points
         setTurn(_turn)
         if (TURN_ENDING_ROLLS.includes(roll)) {
@@ -180,6 +209,11 @@ const PassThePigsCounter: FC<{}> = ({}) => {
         setTab(Tabs.ROLL)
     }
 
+    const togglePoints = () => {
+        setPointSystem(pointSystem === PointSystem.DEFAULT ? PointSystem.CAPPA : PointSystem.DEFAULT)
+    }
+
+
     return (
         <div className={styles.app}>
             <div className={styles.tabs}>
@@ -202,11 +236,11 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                     </div>
                     <hr />
                     <div className={styles.section}>
-                        <Sider onClick={handleRoll}/>
-                        <RazorBack onClick={handleRoll}/>
-                        <Trotter onClick={handleRoll}/>
-                        <Snouter onClick={handleRoll}/>
-                        <LeaningJowler onClick={handleRoll}/>
+                        <Sider pointSystem={pointSystem} onClick={handleRoll}/>
+                        <RazorBack pointSystem={pointSystem} onClick={handleRoll}/>
+                        <Trotter pointSystem={pointSystem} onClick={handleRoll}/>
+                        <Snouter pointSystem={pointSystem} onClick={handleRoll}/>
+                        <LeaningJowler pointSystem={pointSystem} onClick={handleRoll}/>
                         <Double active={double} onClick={() => setDouble(true)}/>
                     </div>
                     <hr />
@@ -232,6 +266,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
                     <div className={styles.newGameContent}>
                        <NewGame onClick={clearLocally}/>
                        <ClearScores onClick={clearScore}/>
+                       <TogglePoints onClick={togglePoints}/>
                     </div>
                 )}
             </div>

@@ -1,14 +1,15 @@
 import { FC, useState } from "react"
-import { getValue, Roll } from "./App"
+import { getValue, PointSystem, Roll } from "./App"
 import styles from './Buttons.module.scss'
 
 interface ButtonProps {
     roll: Roll
     onClick: (roll: Roll) => void
+    pointSystem?: PointSystem
 }
 
-export const Button: FC<ButtonProps> = ({roll, onClick}) => {
-    const points = getValue(roll)
+export const Button: FC<ButtonProps> = ({roll, onClick, pointSystem = PointSystem.DEFAULT}) => {
+    const points = getValue(roll, pointSystem)
     const [active, setActive] = useState<boolean>(false)
     return (
         <div className={styles.pigSelect}>
@@ -80,8 +81,22 @@ export const ClearScores: FC<{onClick: () => void}> = ({onClick}) => {
     )
 }
 
+export const TogglePoints: FC<{onClick: () => void}> = ({onClick}) => {
+    return (
+        <div className={`${styles.pigSelect} ${styles.fullSize}`}>
+            <div className={styles.pigSelectButton} onClick={onClick}>
+                <span>
+                    Toggle Points
+                </span>
+            </div>
+        </div>
+    )
+}
+
+
 interface RollProps {
     onClick: (roll: Roll) => void
+    pointSystem?: PointSystem
 }
 
 export const Sider: FC<RollProps> = (props) => <Button roll={Roll.SIDER} {...props}/>
