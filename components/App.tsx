@@ -89,7 +89,7 @@ const count = (turn: Array<Roll | [Roll, Roll] | [number, Roll, Roll]>, current:
                 _count = _count * roll[0]
             } else {
                 _count = getValue(roll[0], pointSystem) + getValue(roll[1], pointSystem)
-                _count = _count * 2
+                _count = pointSystem === PointSystem.CAPPA ? _count * 3 : _count * 2
             }
             return total + _count
         }
@@ -194,7 +194,7 @@ const PassThePigsCounter: FC<{}> = ({}) => {
             if (!multipleFirst) {
                 setMultipleFirst(roll)
             } else {
-                _turn.rolls.push([1.25, multipleFirst, roll])
+                _turn.rolls.push([2, multipleFirst, roll])
                 setMultiple(false)
                 setMultipleFirst(undefined)
             }

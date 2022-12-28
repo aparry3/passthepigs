@@ -48,9 +48,9 @@ export const Double: FC<{onClick: () => void, onClickSmall?: () => void, pointSy
     return (
         <div className={styles.pigSelect}>
             <div className={`${styles.pigSelectButton}`}>
-                {pointSystem === PointSystem.CAPPA && (<><div className={`${styles.subButton} ${smallActive && styles.active}`} onClick={onClickSmall}>1.25X</div><div className={styles.vertical} /></>)}
+                {pointSystem === PointSystem.CAPPA && (<><div className={`${styles.subButton} ${smallActive && styles.active}`} onClick={onClickSmall}>2X</div><div className={styles.vertical} /></>)}
                 <div className={`${styles.subButton} ${active && styles.active}`} onClick={onClick}>
-                    2X
+                    {pointSystem === PointSystem.CAPPA ? "3X" : "2X"}
                 </div>
             </div>
         </div>
