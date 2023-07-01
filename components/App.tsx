@@ -77,6 +77,8 @@ export const getValue = (roll: Roll, system: PointSystem = PointSystem.DEFAULT):
     // }
 }
 
+//Testing to see if adding code actually changes anything
+
 const count = (turn: Array<Roll | [Roll, Roll] | [number, Roll, Roll]>, current: number, pointSystem: PointSystem = PointSystem.DEFAULT): number => {
     if (turn[turn.length - 1] === Roll.PIG_OUT) return 0
     if (turn[turn.length - 1] === Roll.OINKER) return -1 * current
